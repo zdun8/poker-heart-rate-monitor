@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poker Heart Rate Monitor</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#1B5E20">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUG9rZXIgSGVhcnQgUmF0ZSBNb25pdG9yIiwic2hvcnRfbmFtZSI6IlBva2VyIEhSIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMxQjVFMjAiLCJ0aGVtZV9jb2xvciI6IiMxQjVFMjAifQ==">
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-container">
+            <h1>🎰 Poker Heart Rate Monitor</h1>
+            <p>Monitor heart rates during poker games using Garmin devices</p>
+            
+            <div id="browser-check" class="card">
+                <h3>Browser Compatibility</h3>
+                <div id="compatibility-status"></div>
+                <div id="browser-requirements" class="requirements-section hidden">
+                    <h4>Supported Browsers:</h4>
+                    <ul id="supported-list"></ul>
+                    <h4>Unsupported Browsers:</h4>
+                    <ul id="unsupported-list"></ul>
+                </div>
+            </div>
+            
+            <div id="welcome-actions">
+                <button id="start-app" class="btn btn--primary btn--lg">Start Application</button>
+                <button id="show-requirements" class="btn btn--outline">View Requirements</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" class="screen">
+        <!-- Header Controls -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1>🎰 Poker Heart Rate Monitor</h1>
+                <div class="header-controls">
+                    <button id="add-player-btn" class="btn btn--primary">Add Player</button>
+                    <button id="start-monitoring" class="btn btn--secondary" disabled>Start Session</button>
+                    <button id="stop-monitoring" class="btn btn--outline hidden">Stop Session</button>
+                    <button id="reset-session" class="btn btn--outline">Reset</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Poker Table -->
+        <main class="poker-table-container">
+            <div class="poker-table">
+                <div class="table-surface">
+                    <!-- Player positions will be dynamically created -->
+                    <div class="player-positions" id="player-positions"></div>
+                    
+                    <!-- Center controls -->
+                    <div class="table-center">
+                        <div class="session-info">
+                            <div class="session-status" id="session-status">Ready to Start</div>
+                            <div class="session-time" id="session-time">00:00</div>
+                            <div class="players-count" id="players-count">0 players connected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Session Statistics -->
+        <div class="session-stats" id="session-stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Average HR</span>
+                    <span class="stat-value" id="avg-hr">--</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Spikes Detected</span>
+                    <span class="stat-value" id="spikes-count">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Active Players</span>
+                    <span class="stat-value" id="active-players">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Player Modal -->
+    <div id="add-player-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Player</h2>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="player-setup-step1" class="setup-step active">
+                    <h3>Step 1: Enter Player Name</h3>
+                    <div class="form-group">
+                        <label for="player-name" class="form-label">Player Name</label>
+                        <input type="text" id="player-name" class="form-control" placeholder="Enter player name" maxlength="20">
+                    </div>
+                    <button id="next-to-setup" class="btn btn--primary" disabled>Next: Device Setup</button>
+                </div>
+
+                <div id="player-setup-step2" class="setup-step">
+                    <h3>Step 2: Setup Garmin Device</h3>
+                    <div class="setup-instructions">
+                        <p><strong>Enable heart rate broadcasting on your Garmin device:</strong></p>
+                        <ol id="garmin-instructions"></ol>
+                    </div>
+                    <div class="setup-actions">
+                        <button id="back-to-name" class="btn btn--outline">Back</button>
+                        <button id="connect-device" class="btn btn--primary">Connect Device</button>
+                    </div>
+                </div>
+
+                <div id="player-setup-step3" class="setup-step">
+                    <h3>Step 3: Connecting...</h3>
+                    <div class="connection-status">
+                        <div class="spinner"></div>
+                        <p id="connection-message">Scanning for Garmin devices...</p>
+                    </div>
+                    <button id="cancel-connection" class="btn btn--outline">Cancel</button>
+                </div>
+
+                <div id="player-setup-success" class="setup-step">
+                    <h3>✅ Player Added Successfully!</h3>
+                    <div class="success-info">
+                        <p><strong id="success-player-name"></strong> has been connected and added to position <strong id="success-position"></strong>.</p>
+                        <div class="current-hr">
+                            <span>Current Heart Rate: </span>
+                            <span id="success-hr" class="hr-value">--</span>
+                            <span> BPM</span>
+                        </div>
+                    </div>
+                    <button id="finish-add-player" class="btn btn--primary">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts Container -->
+    <div id="alerts-container" class="alerts-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
