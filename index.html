@@ -6,16 +6,15 @@
     <title>Poker Pro HR Monitor</title>
     <style>
         :root {
-            /* Color Palette */
             --bg-dark: #0f172a;
             --surface-dark: #1e293b;
             --surface-light: #334155;
-            --primary: #10b981; /* Emerald */
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --primary: #10b981; /* Green */
+            --warning: #fbbf24; /* Yellow */
+            --orange: #f97316;  /* Orange */
+            --danger: #ef4444;  /* Red */
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --grid-line: rgba(255, 255, 255, 0.1);
         }
 
         body {
@@ -34,36 +33,34 @@
         header {
             background-color: var(--surface-dark);
             border-bottom: 1px solid var(--surface-light);
-            padding: 1rem 2rem;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 80px;
+            height: 70px;
         }
 
-        h1 { margin: 0; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .logo-icon { font-size: 1.8rem; }
-
+        h1 { margin: 0; font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        
         .controls { display: flex; gap: 10px; }
         
         button {
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
             border: none;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: #059669; }
-        .btn-primary:disabled { background: #334155; cursor: not-allowed; opacity: 0.7; }
+        .btn-primary { background: var(--primary); color: #064e3b; }
+        .btn-primary:hover { background: #34d399; }
+        .btn-primary:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
         
         .btn-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
-        .btn-danger:hover { background: rgba(239, 68, 68, 0.3); }
-
-        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); }
+        
+        .btn-outline { background: transparent; border: 1px solid var(--surface-light); color: var(--text-muted); }
         .btn-outline:hover { border-color: var(--text-main); color: var(--text-main); }
 
         /* --- Main Layout --- */
@@ -80,24 +77,21 @@
         .session-stats {
             display: flex;
             gap: 2rem;
-            padding: 1rem 2rem;
+            padding: 0.75rem 1.5rem;
             background: rgba(30, 41, 59, 0.5);
-            border-radius: 12px;
+            border-radius: 8px;
             border: 1px solid var(--surface-light);
             align-items: center;
         }
 
         .stat-group { display: flex; flex-direction: column; }
-        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-        .stat-val { font-size: 1.25rem; font-weight: 700; font-family: monospace; }
-        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-        .status-active { background: rgba(16, 185, 129, 0.2); color: var(--primary); }
-        .status-idle { background: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+        .stat-val { font-size: 1.1rem; font-weight: 700; font-family: monospace; }
 
         /* Players Grid */
         .players-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr)); /* Wider cards */
             gap: 1.5rem;
             padding-bottom: 2rem;
         }
@@ -106,64 +100,52 @@
         .player-card {
             background: var(--surface-dark);
             border: 1px solid var(--surface-light);
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 1.5rem;
             position: relative;
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.5rem;
         }
 
-        .player-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
-            border-color: var(--text-muted);
-        }
-
-        .player-card.spike-anim {
-            animation: pulse-red 1s infinite;
-            border-color: var(--danger);
-        }
-
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        /* Card Header */
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 0.5rem;
         }
 
-        .player-name { font-size: 1.2rem; font-weight: 600; color: var(--text-main); }
-        .connection-indicator {
+        .player-name { font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
+        
+        .connection-dot {
             width: 8px; height: 8px; border-radius: 50%;
-            background: var(--text-muted);
-            box-shadow: 0 0 8px var(--text-muted);
+            background: var(--surface-light);
         }
-        .connection-indicator.connected { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
+        .connection-dot.connected { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
 
-        /* Main HR Display */
+        /* HR Display & Colors */
         .hr-display {
             display: flex;
             align-items: baseline;
             gap: 0.5rem;
+            position: relative;
+            z-index: 2;
         }
 
         .big-hr {
-            font-size: 4rem;
+            font-size: 4.5rem;
             font-weight: 800;
             line-height: 1;
             font-variant-numeric: tabular-nums;
-            background: -webkit-linear-gradient(45deg, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            transition: color 0.3s ease;
         }
+
+        /* Dynamic HR Colors */
+        .hr-color-resting { color: var(--primary); }
+        .hr-color-elevated { color: var(--warning); }
+        .hr-color-high { color: var(--orange); }
+        .hr-color-extreme { color: var(--danger); }
 
         .hr-unit { font-size: 1rem; color: var(--text-muted); font-weight: 500; }
         
@@ -176,14 +158,16 @@
             text-transform: uppercase;
         }
 
-        /* Chart Area */
+        /* --- Chart Area --- */
         .chart-container {
-            height: 100px;
-            width: 100%;
+            height: 120px;
+            width: 100%; /* Ensure full width */
             position: relative;
-            background: rgba(0,0,0,0.2);
+            background: rgba(15, 23, 42, 0.5);
             border-radius: 8px;
             overflow: hidden;
+            margin: 10px 0;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         svg.sparkline {
@@ -208,49 +192,35 @@
             transition: fill 0.3s;
         }
 
-        /* Stats Row (Peak info) */
+        /* --- Animations --- */
+        
+        /* Pulse Animation for Spikes */
+        @keyframes chart-flash {
+            0% { stroke: var(--text-main); stroke-width: 3; filter: drop-shadow(0 0 0 transparent); }
+            25% { stroke: var(--danger); stroke-width: 5; filter: drop-shadow(0 0 5px var(--danger)); }
+            100% { stroke: var(--text-main); stroke-width: 3; filter: drop-shadow(0 0 0 transparent); }
+        }
+
+        .line-spike {
+            animation: chart-flash 1s ease-out;
+        }
+
+        /* Stats Row */
         .stats-row {
             display: flex;
             justify-content: space-between;
-            background: rgba(255,255,255,0.03);
-            padding: 10px;
-            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-top: auto;
         }
 
-        .stat-pill {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-pill label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 2px; }
-        .stat-pill span { font-size: 0.9rem; font-weight: 600; color: var(--text-main); font-family: monospace; }
-        
+        .stat-pill { display: flex; flex-direction: column; }
+        .stat-pill label { font-size: 0.7rem; color: var(--text-muted); }
+        .stat-pill span { font-size: 0.9rem; font-weight: 600; font-family: monospace; }
         .peak-val { color: var(--warning) !important; }
 
-        /* --- Colors based on Zones --- */
-        .zone-resting { --zone-color: #10b981; }
-        .zone-elevated { --zone-color: #f59e0b; }
-        .zone-high { --zone-color: #f97316; }
-        .zone-very-high { --zone-color: #ef4444; }
-
-        /* Dynamic coloring for chart and text */
-        .player-card[data-zone="resting"] .big-hr { -webkit-text-fill-color: #10b981; }
-        .player-card[data-zone="resting"] path.line { stroke: #10b981; }
-        .player-card[data-zone="resting"] path.area { fill: rgba(16, 185, 129, 0.1); }
-        
-        .player-card[data-zone="elevated"] .big-hr { -webkit-text-fill-color: #f59e0b; }
-        .player-card[data-zone="elevated"] path.line { stroke: #f59e0b; }
-        .player-card[data-zone="elevated"] path.area { fill: rgba(245, 158, 11, 0.1); }
-
-        .player-card[data-zone="high"] .big-hr { -webkit-text-fill-color: #f97316; }
-        .player-card[data-zone="high"] path.line { stroke: #f97316; }
-        .player-card[data-zone="high"] path.area { fill: rgba(249, 115, 22, 0.1); }
-
-        .player-card[data-zone="very-high"] .big-hr { -webkit-text-fill-color: #ef4444; }
-        .player-card[data-zone="very-high"] path.line { stroke: #ef4444; }
-        .player-card[data-zone="very-high"] path.area { fill: rgba(239, 68, 68, 0.1); }
-
-        /* Modals & Utilities */
+        /* Modals & Utils */
         .hidden { display: none !important; }
         
         .modal-backdrop {
@@ -268,9 +238,8 @@
             border: 1px solid var(--surface-light);
             border-radius: 12px;
             padding: 2rem;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 450px;
         }
 
         .form-input {
@@ -278,22 +247,12 @@
             padding: 12px;
             background: var(--bg-dark);
             border: 1px solid var(--surface-light);
-            border-radius: 8px;
+            border-radius: 6px;
             color: white;
             margin: 10px 0 20px 0;
-            font-size: 1rem;
+            box-sizing: border-box;
         }
         .form-input:focus { outline: 2px solid var(--primary); border-color: transparent; }
-
-        .instruction-list {
-            background: rgba(0,0,0,0.2);
-            padding: 1rem 1rem 1rem 2rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
 
         #empty-state {
             grid-column: 1 / -1;
@@ -308,10 +267,7 @@
 <body>
 
     <header>
-        <h1>
-            <span class="logo-icon">🎰</span>
-            Poker Pro HR
-        </h1>
+        <h1>🎰 Poker Pro HR</h1>
         <div class="controls">
             <button id="add-player-btn" class="btn-primary">+ Add Player</button>
             <button id="start-session" class="btn-primary" disabled>Start</button>
@@ -322,10 +278,6 @@
 
     <main>
         <div class="session-stats">
-            <div class="stat-group">
-                <span class="stat-label">Status</span>
-                <span id="session-status-badge" class="status-badge status-idle">Idle</span>
-            </div>
             <div class="stat-group">
                 <span class="stat-label">Duration</span>
                 <span id="session-timer" class="stat-val">00:00:00</span>
@@ -347,26 +299,11 @@
     <div id="add-modal" class="modal-backdrop hidden">
         <div class="modal-content">
             <h2 style="margin-top:0">Add New Player</h2>
-            
             <div id="step-1">
                 <label style="color: var(--text-muted); font-size: 0.9rem;">Player Name</label>
-                <input type="text" id="player-name-input" class="form-input" placeholder="e.g. 'The Shark'" autocomplete="off">
+                <input type="text" id="player-name-input" class="form-input" placeholder="e.g. 'Zdun'" autocomplete="off">
                 <div style="display:flex; justify-content:flex-end; gap:10px;">
                     <button class="btn-outline" onclick="app.closeModal()">Cancel</button>
-                    <button class="btn-primary" onclick="app.goToStep2()">Next: Setup Device</button>
-                </div>
-            </div>
-
-            <div id="step-2" class="hidden">
-                <p style="color: var(--text-muted);">Prepare your Garmin Device:</p>
-                <ol class="instruction-list">
-                    <li>Hold <strong>UP</strong> button for menu.</li>
-                    <li>Settings > Sensors > Wrist HR.</li>
-                    <li>Select <strong>Broadcast Heart Rate</strong>.</li>
-                    <li>Press <strong>START</strong> to broadcast.</li>
-                </ol>
-                <div style="display:flex; justify-content:flex-end; gap:10px;">
-                    <button class="btn-outline" onclick="app.goToStep1()">Back</button>
                     <button class="btn-primary" onclick="app.connectDevice()">Connect Bluetooth</button>
                 </div>
             </div>
@@ -381,11 +318,13 @@
                 this.sessionStartTime = null;
                 this.timerInterval = null;
                 
+                // Config
+                this.historySize = 100; // Number of data points to keep
+                
                 // DOM Elements
                 this.container = document.getElementById('players-container');
                 this.emptyState = document.getElementById('empty-state');
                 this.timerEl = document.getElementById('session-timer');
-                this.statusBadge = document.getElementById('session-status-badge');
                 this.modal = document.getElementById('add-modal');
                 this.nameInput = document.getElementById('player-name-input');
                 this.startBtn = document.getElementById('start-session');
@@ -397,49 +336,75 @@
                 this.stopBtn.onclick = () => this.stopSession();
                 document.getElementById('reset-app').onclick = () => location.reload();
 
-                // Demo Mode Fallback check
-                if (!navigator.bluetooth) {
-                    console.warn("Web Bluetooth not supported. Running in Demo Mode.");
-                }
+                if (!navigator.bluetooth) console.warn("Bluetooth API not found - running in demo mode.");
             }
 
-            /* --- UI Management --- */
-            
             openModal() {
                 this.modal.classList.remove('hidden');
-                this.goToStep1();
+                this.nameInput.value = '';
+                this.nameInput.focus();
             }
 
             closeModal() {
                 this.modal.classList.add('hidden');
-                this.nameInput.value = '';
             }
 
-            goToStep1() {
-                document.getElementById('step-1').classList.remove('hidden');
-                document.getElementById('step-2').classList.add('hidden');
-                this.nameInput.focus();
+            async connectDevice() {
+                const name = this.nameInput.value.trim();
+                if(!name) return alert("Enter a name");
+
+                let device, characteristic;
+
+                try {
+                    if (navigator.bluetooth) {
+                        device = await navigator.bluetooth.requestDevice({
+                            filters: [{ services: ['heart_rate'] }]
+                        });
+                        const server = await device.gatt.connect();
+                        const service = await server.getPrimaryService('heart_rate');
+                        characteristic = await service.getCharacteristic('heart_rate_measurement');
+                    }
+                    
+                    this.addPlayer(name, device, characteristic);
+                    this.closeModal();
+
+                } catch (error) {
+                    console.error(error);
+                    alert("Connection failed. Try again.");
+                }
             }
 
-            goToStep2() {
-                if(!this.nameInput.value.trim()) return alert("Please enter a name");
-                document.getElementById('step-1').classList.add('hidden');
-                document.getElementById('step-2').classList.remove('hidden');
+            addPlayer(name, device, characteristic) {
+                // Initialize history with 0s so chart fills from right
+                const historyArr = new Array(this.historySize).fill(0);
+
+                const player = {
+                    id: Date.now(),
+                    name: name,
+                    device: device,
+                    characteristic: characteristic,
+                    history: historyArr,
+                    currentHR: 0,
+                    prevHR: 0, // For spike detection
+                    maxHR: 0,
+                    maxHRTime: null,
+                    isMock: !device
+                };
+
+                this.players.push(player);
+                this.renderPlayers();
+
+                if (player.isMock) this.startMockData(player);
+                else this.startRealData(player);
             }
 
             renderPlayers() {
-                if (this.players.length === 0) {
-                    this.emptyState.classList.remove('hidden');
-                    this.startBtn.disabled = true;
-                    return;
+                if (this.players.length > 0) {
+                    this.emptyState.classList.add('hidden');
+                    this.startBtn.disabled = false;
+                    document.getElementById('active-player-count').textContent = this.players.length;
                 }
                 
-                this.emptyState.classList.add('hidden');
-                this.startBtn.disabled = false;
-                document.getElementById('active-player-count').textContent = this.players.length;
-
-                // We don't re-render everything to avoid chart flicker.
-                // We only append new players if they aren't in DOM.
                 this.players.forEach(player => {
                     if (!document.getElementById(`player-${player.id}`)) {
                         this.createPlayerCard(player);
@@ -451,25 +416,24 @@
                 const card = document.createElement('div');
                 card.id = `player-${player.id}`;
                 card.className = 'player-card';
-                card.setAttribute('data-zone', 'resting');
                 
                 card.innerHTML = `
                     <div class="card-header">
                         <span class="player-name">${player.name}</span>
-                        <div class="connection-indicator connected" title="Connected"></div>
+                        <div class="connection-dot connected"></div>
                     </div>
                     
                     <div class="hr-display">
-                        <span class="big-hr" id="hr-val-${player.id}">--</span>
+                        <span class="big-hr hr-color-resting" id="hr-val-${player.id}">--</span>
                         <span class="hr-unit">BPM</span>
-                        <span class="zone-badge" id="zone-badge-${player.id}">RESTING</span>
+                        <span class="zone-badge" id="zone-badge-${player.id}">WAITING</span>
                     </div>
 
                     <div class="chart-container">
-                        <svg class="sparkline" preserveAspectRatio="none">
+                        <svg class="sparkline" preserveAspectRatio="none" viewBox="0 0 100 100">
                             <defs>
                                 <linearGradient id="grad-${player.id}" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" style="stop-color:currentColor; stop-opacity:0.2" />
+                                    <stop offset="0%" style="stop-color:currentColor; stop-opacity:0.3" />
                                     <stop offset="100%" style="stop-color:currentColor; stop-opacity:0" />
                                 </linearGradient>
                             </defs>
@@ -497,104 +461,52 @@
                 this.container.appendChild(card);
             }
 
-            /* --- Logic & Data --- */
-
-            async connectDevice() {
-                const name = this.nameInput.value;
-                let device, characteristic;
-
-                try {
-                    if (navigator.bluetooth) {
-                        device = await navigator.bluetooth.requestDevice({
-                            filters: [{ services: ['heart_rate'] }],
-                            optionalServices: ['heart_rate']
-                        });
-                        const server = await device.gatt.connect();
-                        const service = await server.getPrimaryService('heart_rate');
-                        characteristic = await service.getCharacteristic('heart_rate_measurement');
-                    } else {
-                        // Demo Mode simulation
-                        await new Promise(r => setTimeout(r, 500)); // Fake delay
-                        console.log("Demo Mode: Adding mock player");
-                    }
-
-                    this.addPlayer(name, device, characteristic);
-                    this.closeModal();
-
-                } catch (error) {
-                    console.error(error);
-                    alert("Connection failed. Try again.");
-                }
-            }
-
-            addPlayer(name, device, characteristic) {
-                const player = {
-                    id: Date.now(),
-                    name: name,
-                    device: device,
-                    characteristic: characteristic,
-                    history: new Array(60).fill(0), // 60 data points for the chart
-                    currentHR: 0,
-                    maxHR: 0,
-                    maxHRTime: null,
-                    isMock: !device
-                };
-
-                this.players.push(player);
-                this.renderPlayers();
-
-                if (player.isMock) {
-                    this.startMockData(player);
-                } else {
-                    this.startRealData(player);
-                }
-            }
-
             startRealData(player) {
                 player.characteristic.startNotifications().then(() => {
                     player.characteristic.addEventListener('characteristicvaluechanged', (e) => {
                         const val = e.target.value;
-                        const hr = val.getUint8(1); // Standard HR format
+                        const hr = val.getUint8(1); 
                         this.updatePlayerHeartRate(player, hr);
                     });
                 });
             }
 
             startMockData(player) {
-                // Simulates a poker game HR (resting, then spikes on bluffs)
                 player.mockInterval = setInterval(() => {
-                    let base = 70;
-                    if (Math.random() > 0.8) base += 30; // Random excitement
-                    if (Math.random() > 0.95) base += 50; // Big bluff
-                    const noise = Math.floor(Math.random() * 10) - 5;
+                    let base = 65;
+                    // Simulate randomness and spikes
+                    if (Math.random() > 0.85) base += 25; 
+                    if (Math.random() > 0.95) base += 45; 
+                    const noise = Math.floor(Math.random() * 6) - 3;
                     let hr = base + noise;
-                    if(hr < 50) hr = 50;
+                    if(hr < 45) hr = 45;
                     this.updatePlayerHeartRate(player, hr);
                 }, 1000);
             }
 
             updatePlayerHeartRate(player, hr) {
-                // Update Data
+                // Shift History
+                player.prevHR = player.currentHR;
                 player.currentHR = hr;
                 player.history.push(hr);
-                if (player.history.length > 60) player.history.shift(); // Keep chart window fixed
+                player.history.shift(); 
 
-                // Peak Logic
+                // Track Max
                 if (hr > player.maxHR && this.isMonitoring) {
                     player.maxHR = hr;
                     player.maxHRTime = new Date();
                 }
 
-                // Update UI
-                this.updateCardUI(player);
+                // UI Update
+                requestAnimationFrame(() => this.updateCardUI(player));
             }
 
             updateCardUI(player) {
-                const card = document.getElementById(`player-${player.id}`);
                 const hrEl = document.getElementById(`hr-val-${player.id}`);
                 const zoneBadge = document.getElementById(`zone-badge-${player.id}`);
+                const linePath = document.getElementById(`path-line-${player.id}`);
                 
-                // Update Values
+                // 1. Text Update
                 hrEl.textContent = player.currentHR;
                 document.getElementById(`current-stat-${player.id}`).textContent = player.currentHR;
                 
@@ -604,44 +516,65 @@
                         player.maxHRTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
                 }
 
-                // Zone Logic
-                let zone = 'resting';
+                // 2. Color & Zone Logic
+                hrEl.className = 'big-hr'; // reset
+                let colorClass = 'hr-color-resting';
                 let zoneText = "RESTING";
-                if (player.currentHR > 120) { zone = 'very-high'; zoneText = "ALL IN!"; }
-                else if (player.currentHR > 100) { zone = 'high'; zoneText = "HIGH"; }
-                else if (player.currentHR > 85) { zone = 'elevated'; zoneText = "ELEVATED"; }
-                
-                card.setAttribute('data-zone', zone);
-                zoneBadge.textContent = zoneText;
+                let strokeColor = "var(--primary)";
 
-                // Spike Animation (if HR jumps significantly)
-                const prev = player.history[player.history.length - 2] || 0;
-                if (player.currentHR - prev > 10) {
-                    card.classList.add('spike-anim');
-                    setTimeout(() => card.classList.remove('spike-anim'), 2000);
+                if (player.currentHR >= 120) {
+                    colorClass = 'hr-color-extreme';
+                    zoneText = "EXTREME";
+                    strokeColor = "var(--danger)";
+                } else if (player.currentHR >= 100) {
+                    colorClass = 'hr-color-high';
+                    zoneText = "HIGH";
+                    strokeColor = "var(--orange)";
+                } else if (player.currentHR >= 80) {
+                    colorClass = 'hr-color-elevated';
+                    zoneText = "ELEVATED";
+                    strokeColor = "var(--warning)";
                 }
 
-                // Update Chart (SVG)
-                this.drawChart(player);
+                hrEl.classList.add(colorClass);
+                zoneBadge.textContent = zoneText;
+                
+                // Update Line Color
+                linePath.style.stroke = strokeColor;
+
+                // 3. Spike Detection (Blink Animation)
+                // If HR jumped up by 12 or more in one tick
+                if (player.currentHR - player.prevHR > 12) {
+                    linePath.classList.remove('line-spike'); // Reset anim
+                    void linePath.offsetWidth; // Trigger reflow
+                    linePath.classList.add('line-spike');
+                }
+
+                // 4. Draw Chart (Full Width Fix)
+                this.drawChart(player, strokeColor);
             }
 
-            drawChart(player) {
+            drawChart(player, color) {
                 const pathLine = document.getElementById(`path-line-${player.id}`);
                 const pathArea = document.getElementById(`path-area-${player.id}`);
                 
                 const data = player.history;
-                const width = 100; // SVG coordinate space
+                // SVG coordinate space is 0-100 x 0-100 due to viewBox
+                const width = 100; 
                 const height = 100;
                 
-                // Calculate Min/Max for Y-axis scaling (dynamic zoom)
-                const min = Math.min(...data.filter(x => x > 0)) * 0.9 || 40;
-                const max = Math.max(...data) * 1.1 || 120;
+                // Dynamic Y-axis
+                // Filter out 0s for scaling calculation so empty history doesn't squash chart
+                const activeData = data.filter(x => x > 0);
+                const min = Math.min(...activeData) * 0.95 || 40;
+                const max = Math.max(...activeData) * 1.05 || 100;
                 const range = max - min;
 
-                // Generate points
+                // Map points to 0-100 coordinates
+                // We map based on INDEX relative to HISTORY SIZE to ensure full width
                 let points = data.map((val, i) => {
-                    if (val === 0) return null; // Skip empty
-                    const x = (i / (data.length - 1)) * width;
+                    if (val === 0) return null;
+                    const x = (i / (this.historySize - 1)) * width;
                     const y = height - ((val - min) / range * height);
                     return `${x},${y}`;
                 }).filter(p => p !== null);
@@ -649,35 +582,31 @@
                 if (points.length < 2) return;
 
                 const lineD = `M ${points.join(' L ')}`;
-                const areaD = `${lineD} L ${width},${height} L 0,${height} Z`;
+                
+                // Create Area fill (closed shape)
+                // We find first and last valid X to close the shape correctly
+                const firstPoint = points[0].split(',');
+                const lastPoint = points[points.length-1].split(',');
+                const areaD = `${lineD} L ${lastPoint[0]},${height} L ${firstPoint[0]},${height} Z`;
 
                 pathLine.setAttribute('d', lineD);
                 pathArea.setAttribute('d', areaD);
+                pathArea.style.color = color; // Uses currentColor in CSS
             }
-
-            /* --- Session Control --- */
 
             startSession() {
                 this.isMonitoring = true;
                 this.sessionStartTime = Date.now();
                 this.startBtn.classList.add('hidden');
                 this.stopBtn.classList.remove('hidden');
-                this.addPlayerBtn = document.getElementById('add-player-btn');
-                this.addPlayerBtn.disabled = true; // Lock roster during game
-                
-                this.statusBadge.textContent = "Monitoring";
-                this.statusBadge.className = "status-badge status-active";
+                document.getElementById('add-player-btn').disabled = true;
 
-                // Reset peaks for new session
-                this.players.forEach(p => {
-                    p.maxHR = 0;
-                    p.maxHRTime = null;
-                });
+                // Reset peaks
+                this.players.forEach(p => { p.maxHR = 0; p.maxHRTime = null; });
 
                 this.timerInterval = setInterval(() => {
                     const diff = Date.now() - this.sessionStartTime;
-                    const date = new Date(diff);
-                    this.timerEl.textContent = date.toISOString().substr(11, 8);
+                    this.timerEl.textContent = new Date(diff).toISOString().substr(11, 8);
                 }, 1000);
             }
 
@@ -687,13 +616,9 @@
                 this.startBtn.classList.remove('hidden');
                 this.stopBtn.classList.add('hidden');
                 document.getElementById('add-player-btn').disabled = false;
-                
-                this.statusBadge.textContent = "Stopped";
-                this.statusBadge.className = "status-badge status-idle";
             }
         }
 
-        // Initialize
         const app = new PokerHRApp();
     </script>
 </body>
